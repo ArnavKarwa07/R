@@ -1,0 +1,14 @@
+x<- c(10,5,20,8,15)
+
+largest<- -Inf
+second_largest<- -Inf
+
+for (i in x){
+  if (i>largest){
+    seconf_largest<- largest
+    largest<-i
+  } else if (i>second_largest && i!=largest) {
+    second_largest<-i
+  }
+}
+second_largest
