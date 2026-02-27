@@ -1,45 +1,49 @@
 # Load dataset
-data(iris)
+data(airquality)
 
-# Create binary outcome: 1 = Setosa, 0 = Others
-iris$IsSetosa <- ifelse(iris$Species == "setosa", 1, 0)
+# Keep needed columns and remove NA rows
+aq <- na.omit(airquality[, c("Ozone", "Temp")])
+
+# Create binary outcome: 1 = High Ozone, 0 = Low Ozone
+ozone_cutoff <- median(aq$Ozone)
+aq$HighOzone <- ifelse(aq$Ozone > ozone_cutoff, 1, 0)
 
 # Check structure
-str(iris)
+str(aq)
 
 # Fit logistic regression model
-model <- glm(IsSetosa ~ Petal.Length,
-             data = iris,
+model <- glm(HighOzone ~ Temp,
+             data = aq,
              family = binomial)
 
 summary(model)
 
 # Predicted probabilities
-iris$prob <- predict(model, type = "response")
+aq$prob <- predict(model, type = "response")
 
-head(iris[, c("Petal.Length", "Species", "prob")])
+head(aq[, c("Temp", "Ozone", "HighOzone", "prob")])
 
 # Install if needed
 # install.packages("ggplot2")
 
 library(ggplot2)
 
-ggplot(iris, aes(x = Petal.Length, y = IsSetosa)) +
+ggplot(aq, aes(x = Temp, y = HighOzone)) +
   geom_point(position = position_jitter(height = 0.05),
              alpha = 0.6) +
   stat_smooth(method = "glm",
               method.args = list(family = "binomial"),
               se = FALSE,
               color = "blue") +
-  labs(title = "Logistic Regression: Predicting Setosa",
-       x = "Petal Length",
-       y = "Probability of Setosa")
+  labs(title = "Logistic Regression: Predicting High Ozone",
+       x = "Temperature",
+       y = "Probability of High Ozone")
 
 # Convert probabilities to predicted class
-iris$pred_class <- ifelse(iris$prob > 0.5, 1, 0)
+aq$pred_class <- ifelse(aq$prob > 0.5, 1, 0)
 
 # Confusion matrix
-table(Predicted = iris$pred_class,
-      Actual = iris$IsSetosa)
+table(Predicted = aq$pred_class,
+      Actual = aq$HighOzone)
 
 exp(coef(model))
