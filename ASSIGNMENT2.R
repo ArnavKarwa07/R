@@ -1,6 +1,6 @@
-# 1. Load your dataset (using 'mtcars' as an example)
+# 1. Load your dataset
 data <- mtcars
-target_variable <- data$mpg  # Change this to your specific column
+target_variable <- data$mpg
 
 # 2. Define your Null Hypothesis (H0) value and Alpha
 null_mean <- 20              # The value you are testing against
