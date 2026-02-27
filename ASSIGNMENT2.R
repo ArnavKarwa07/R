@@ -3,7 +3,7 @@ data <- mtcars
 target_variable <- data$mpg
 
 # 2. Define your Null Hypothesis (H0) value and Alpha
-null_mean <- 20              # The value you are testing against
+null_mean <- 20              # Null hypothesis - mean value of of mpg is 20
 alpha <- 0.05                # Significance level (95% confidence)
 
 # 3. Perform the T-Test

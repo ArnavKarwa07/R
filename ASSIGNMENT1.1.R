@@ -1,0 +1,79 @@
+cat("===== OBJECTIVE 1: Explore R Environment =====\n")
+
+# Show current working directory
+cat("Current Working Directory:\n")
+print(getwd())
+
+# Show R version
+cat("\nR Version:\n")
+print(R.version.string)
+
+# Show search path (attached packages/environment)
+cat("\nSearch Path:\n")
+print(search())
+
+
+cat("\n===== OBJECTIVE 2: Examine R Workspace =====\n")
+
+# Create a few objects in workspace
+a <- 10
+b <- 25
+name <- "Arnav"
+
+# List all objects currently in workspace
+cat("Objects in Workspace (ls):\n")
+print(ls())
+
+# Show detailed structure of one object
+cat("\nStructure of object 'name':\n")
+str(name)
+
+
+cat("\n===== OBJECTIVE 3: Read and Import Datasets =====\n")
+
+# Create a sample dataset and save as CSV (so import can be demonstrated)
+student_data <- data.frame(
+	StudentID = 1:6,
+	Name = c("Asha", "Rohan", "Neha", "Vikram", "Isha", "Kabir"),
+	Marks = c(78, 85, 92, 67, 88, 74),
+	Attendance = c(90, 95, 98, 80, 92, 85)
+)
+
+write.csv(student_data, "student_data.csv", row.names = FALSE)
+cat("Sample CSV file created: student_data.csv\n")
+
+# Import dataset from CSV
+data_imported <- read.csv("student_data.csv")
+
+cat("\nImported Dataset:\n")
+print(data_imported)
+
+
+cat("\n===== OBJECTIVE 4: Manipulate, Analyze, Save, and Display =====\n")
+
+# Add new column: Grade based on Marks
+data_imported$Grade <- ifelse(data_imported$Marks >= 85, "A", "B")
+
+# Manipulate: sort by Marks descending
+data_sorted <- data_imported[order(-data_imported$Marks), ]
+
+# Analyze basic statistics
+avg_marks <- mean(data_imported$Marks)
+max_marks <- max(data_imported$Marks)
+min_marks <- min(data_imported$Marks)
+
+cat("Dataset after adding Grade and sorting by Marks:\n")
+print(data_sorted)
+
+cat("\nBasic Analysis:\n")
+cat("Average Marks:", avg_marks, "\n")
+cat("Maximum Marks:", max_marks, "\n")
+cat("Minimum Marks:", min_marks, "\n")
+
+# Display first few rows
+cat("\nFirst 3 rows of dataset:\n")
+print(head(data_sorted, 3))
+
+# Save manipulated dataset
+write.csv(data_sorted, "student_data_processed.csv", row.names = FALSE)
+cat("\nProcessed dataset saved as: student_data_processed.csv\n")
