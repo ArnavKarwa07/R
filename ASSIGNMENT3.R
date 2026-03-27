@@ -1,0 +1,21 @@
+# Association rule - Apriori Algorithm
+
+library(arules)
+library(arulesViz)
+
+data("Groceries")
+
+rules <- apriori(Groceries, parameter = list(support = 0.01, confidence = 0.5))
+quality(rules) <- quality(rules)[, c("support", "confidence", "lift")]
+inspect(rules)
+
+metrics <- as.data.frame(quality(rules))
+metrics <- metrics[order(metrics$support), c("support", "confidence", "lift")]
+cols <- c("steelblue", "darkgreen", "firebrick")
+matplot(metrics, type = "l", lty = 1, lwd = 2, col = cols,
+  xlab = "Rule Index (sorted by support)", ylab = "Metric Value",
+  main = "Support, Confidence, Lift Trends"
+)
+legend("topleft", legend = colnames(metrics), col = cols, lty = 1, lwd = 2, bty = "n")
+
+plot(rules, method = "graph", engine = "interactive")

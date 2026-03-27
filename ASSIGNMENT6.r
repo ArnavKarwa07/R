@@ -1,0 +1,21 @@
+# Implementation of naive bayes classifier for titanic dataset
+library(e1071)
+
+data("Titanic")
+
+titanic_df <- as.data.frame(Titanic)
+titanic_df$Survived <- as.factor(titanic_df$Survived)
+
+model <- naiveBayes(Survived ~ ., data = titanic_df)
+predictions <- predict(model, titanic_df)
+
+confusion_matrix <- table(titanic_df$Survived, predictions)
+print(confusion_matrix)
+accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
+precision <- confusion_matrix[2, 2] / sum(confusion_matrix[2, ])
+recall <- confusion_matrix[2, 2] / sum(confusion_matrix[, 2])
+f1_score <- 2 * (precision * recall) / (precision + recall)
+print(paste("Accuracy:", round(accuracy, 4)))
+print(paste("Precision:", round(precision, 4)))
+print(paste("Recall:", round(recall, 4)))
+print(paste("F1 Score:", round(f1_score, 4)))
