@@ -1,0 +1,21 @@
+# Decision tree 
+# Load necessary libraries
+library(rpart)
+library(rpart.plot)
+library(ggplot2)
+
+# Load the dataset
+data(airquality)
+airquality_data <- na.omit(airquality)
+airquality_data$HighOzone <- as.factor(ifelse(airquality_data$Ozone > median(airquality_data$Ozone), "High", "Low"))
+
+# Decision Tree
+dt_model <- rpart(HighOzone ~ Solar.R + Wind + Temp + Month + Day, data = airquality_data, method = "class")
+print(dt_model)
+
+# Plot the decision tree
+rpart.plot(dt_model)
+
+pred <- predict(dt_model, airquality_data, type = "class")
+conf_matrix <- table(airquality_data$HighOzone, pred)
+print(conf_matrix)
