@@ -1,0 +1,60 @@
+# Random Forest Classification and Regression
+
+# Load necessary library
+library(randomForest)
+
+# -------------------------------------------------
+# 1) Random Forest Classification using iris dataset
+# -------------------------------------------------
+
+data(iris)
+iris <- na.omit(iris)
+iris$Species <- as.factor(iris$Species)
+
+set.seed(123)
+train_indices_class <- sample(1:nrow(iris), size = 0.7 * nrow(iris))
+train_data_class <- iris[train_indices_class, ]
+test_data_class <- iris[-train_indices_class, ]
+
+rf_class_model <- randomForest(Species ~ ., data = train_data_class, ntree = 100, importance = TRUE)
+print(rf_class_model)
+
+class_predicted_values <- predict(rf_class_model, test_data_class)
+class_actual_values <- test_data_class$Species
+
+class_result_table <- data.frame(Actual = class_actual_values, Predicted = class_predicted_values)
+print(class_result_table)
+
+class_confusion_matrix <- table(Actual = class_actual_values, Predicted = class_predicted_values)
+print(class_confusion_matrix)
+
+plot(rf_class_model, main = "Classification: Random Forest Error Rate")
+varImpPlot(rf_class_model, main = "Classification: Variable Importance")
+
+# -------------------------------------------------
+# 2) Random Forest Regression using mtcars dataset
+# -------------------------------------------------
+
+data(mtcars)
+
+set.seed(123)
+train_indices_reg <- sample(1:nrow(mtcars), size = 0.7 * nrow(mtcars))
+train_data_reg <- mtcars[train_indices_reg, ]
+test_data_reg <- mtcars[-train_indices_reg, ]
+
+rf_reg_model <- randomForest(mpg ~ ., data = train_data_reg, ntree = 100, importance = TRUE)
+print(rf_reg_model)
+
+reg_predicted_values <- predict(rf_reg_model, test_data_reg)
+reg_actual_values <- test_data_reg$mpg
+
+reg_result_table <- data.frame(Actual = reg_actual_values, Predicted = reg_predicted_values)
+print(reg_result_table)
+
+plot(reg_actual_values, reg_predicted_values,
+	main = "Regression: Actual vs Predicted MPG",
+	xlab = "Actual MPG", ylab = "Predicted MPG",
+	col = "blue", pch = 16)
+abline(0, 1, col = "red", lwd = 2)
+
+varImpPlot(rf_reg_model, main = "Regression: Variable Importance")
