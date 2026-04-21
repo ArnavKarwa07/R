@@ -1,3 +1,7 @@
+# Install required packages (run once)
+required_packages <- c("dplyr", "ggplot2", "readr")
+missing_packages <- required_packages[!(required_packages %in% installed.packages()[, "Package"])]
+if (length(missing_packages) > 0) install.packages(missing_packages)
 data(mtcars)
 
 str(mtcars)
