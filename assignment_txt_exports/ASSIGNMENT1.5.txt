@@ -1,0 +1,17 @@
+x<- c(1,2,3,2,1)
+
+flag <- TRUE
+n <- length(x)
+
+for (i in 1:(n/2)) {
+  if (x[i] !=x[n-i+1]) {
+    flag <- FALSE
+    break
+  }
+}
+
+if (flag) {
+  print("Palindrome")
+} else {
+  print("Not Palindrome")
+}

@@ -1,0 +1,42 @@
+# K-means
+
+# Load necessary libraries
+library(ggplot2)
+library(cluster)
+
+# Load the dataset
+data(mtcars)
+mtcars$am <- as.factor(mtcars$am)
+
+# Elbow method to find the optimal k
+set.seed(123)
+wcss <- vector()
+for (k in 1:10) {
+  kmeans_temp <- kmeans(mtcars[, -c(9)], centers = k, nstart = 25)
+  wcss[k] <- kmeans_temp$tot.withinss
+}
+
+elbow_data <- data.frame(k = 1:10, WCSS = wcss)
+ggplot(elbow_data, aes(x = k, y = WCSS)) +
+  geom_line() +
+  geom_point(size = 3) +
+  labs(title = "Elbow Method for Optimal k", x = "Number of Clusters (k)", y = "Within-Cluster Sum of Squares") +
+  theme_minimal() +
+  scale_x_continuous(breaks = 1:10)
+
+# K-means clustering with optimal k (determined from elbow plot)
+optimal_k <- 2
+set.seed(123)
+kmeans_model <- kmeans(mtcars[, -c(9)], centers = optimal_k, nstart = 25)
+print(kmeans_model)
+
+# PCA for visualization
+pca <- prcomp(mtcars[, -c(9)], scale. = TRUE)
+pca_data <- data.frame(pca$x, am = mtcars$am)
+
+ggplot(pca_data, aes(PC1, PC2, color = am)) +
+  geom_point(size = 3) +
+  labs(title = "PCA of mtcars dataset", x = "Principal Component 1", y = "Principal Component 2") +
+  theme_minimal() +
+  scale_color_manual(values = c("red", "blue")) +
+  theme(legend.title = element_blank())

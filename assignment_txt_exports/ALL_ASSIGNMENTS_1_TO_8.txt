@@ -1,0 +1,522 @@
+================================================================================
+TITLE: ASSIGNMENT1.0.R
+================================================================================
+
+#Find maximum value using loop and condition only
+
+x <- c(5, 12, 3, 20, 8)
+max_val <- x[1]
+for (i in x) {
+  if (i> max_val){
+    max_val <- i
+  }
+}
+max_val
+
+
+
+
+
+
+================================================================================
+TITLE: ASSIGNMENT1.1.R
+================================================================================
+
+cat("===== OBJECTIVE 1: Explore R Environment =====\n")
+
+# Show current working directory
+cat("Current Working Directory:\n")
+print(getwd())
+
+# Show R version
+cat("\nR Version:\n")
+print(R.version.string)
+
+# Show search path (attached packages/environment)
+cat("\nSearch Path:\n")
+print(search())
+
+
+cat("\n===== OBJECTIVE 2: Examine R Workspace =====\n")
+
+# Create a few objects in workspace
+a <- 10
+b <- 25
+name <- "Arnav"
+
+# List all objects currently in workspace
+cat("Objects in Workspace (ls):\n")
+print(ls())
+
+# Show detailed structure of one object
+cat("\nStructure of object 'name':\n")
+str(name)
+
+
+cat("\n===== OBJECTIVE 3: Read and Import Datasets =====\n")
+
+# Create a sample dataset and save as CSV (so import can be demonstrated)
+student_data <- data.frame(
+	StudentID = 1:6,
+	Name = c("Asha", "Rohan", "Neha", "Vikram", "Isha", "Kabir"),
+	Marks = c(78, 85, 92, 67, 88, 74),
+	Attendance = c(90, 95, 98, 80, 92, 85)
+)
+
+write.csv(student_data, "student_data.csv", row.names = FALSE)
+cat("Sample CSV file created: student_data.csv\n")
+
+# Import dataset from CSV
+data_imported <- read.csv("student_data.csv")
+
+cat("\nImported Dataset:\n")
+print(data_imported)
+
+
+cat("\n===== OBJECTIVE 4: Manipulate, Analyze, Save, and Display =====\n")
+
+# Add new column: Grade based on Marks
+data_imported$Grade <- ifelse(data_imported$Marks >= 85, "A", "B")
+
+# Manipulate: sort by Marks descending
+data_sorted <- data_imported[order(-data_imported$Marks), ]
+
+# Analyze basic statistics
+avg_marks <- mean(data_imported$Marks)
+max_marks <- max(data_imported$Marks)
+min_marks <- min(data_imported$Marks)
+
+cat("Dataset after adding Grade and sorting by Marks:\n")
+print(data_sorted)
+
+cat("\nBasic Analysis:\n")
+cat("Average Marks:", avg_marks, "\n")
+cat("Maximum Marks:", max_marks, "\n")
+cat("Minimum Marks:", min_marks, "\n")
+
+# Display first few rows
+cat("\nFirst 3 rows of dataset:\n")
+print(head(data_sorted, 3))
+
+# Save manipulated dataset
+write.csv(data_sorted, "student_data_processed.csv", row.names = FALSE)
+cat("\nProcessed dataset saved as: student_data_processed.csv\n")
+
+
+
+================================================================================
+TITLE: ASSIGNMENT1.2.R
+================================================================================
+
+#Replace NA values with mean of non-NA elements(without mean())
+
+x <- c(10, NA, 20, NA, 30)
+
+sum <- 0
+count <- 0
+
+for (i in x){
+  if(!is.na(i)){
+  sum <- sum+i
+  count <- count+1
+  }
+}
+mean_val <- sum/count
+
+for (i in 1:length(x)){
+  if (is.na(x[i])){
+    x[i] <- mean_val
+  }
+}
+x
+
+
+================================================================================
+TITLE: ASSIGNMENT1.3.R
+================================================================================
+
+x<- c(2,3,2,5,3,2)
+
+visited <- rep(FALSE, length(x))
+
+for (i in 1:length(x)){
+  if(!visited[i]){
+    count<-1
+    for(j in (i+1):length(x)){
+      if (x[i]== x[j]){
+        count <- count+1
+        visited[j]<-TRUE
+      }
+    }
+    cat(x[i], ":", count, "\n")
+  }
+}
+
+
+================================================================================
+TITLE: ASSIGNMENT1.4.R
+================================================================================
+
+x<- c(10,5,20,8,15)
+
+largest<- -Inf
+second_largest<- -Inf
+
+for (i in x){
+  if (i>largest){
+    second_largest<- largest
+    largest<-i
+  } else if (i>second_largest && i!=largest) {
+    second_largest<-i
+  }
+}
+second_largest
+
+
+================================================================================
+TITLE: ASSIGNMENT1.5.R
+================================================================================
+
+x<- c(1,2,3,2,1)
+
+flag <- TRUE
+n <- length(x)
+
+for (i in 1:(n/2)) {
+  if (x[i] !=x[n-i+1]) {
+    flag <- FALSE
+    break
+  }
+}
+
+if (flag) {
+  print("Palindrome")
+} else {
+  print("Not Palindrome")
+}
+
+
+================================================================================
+TITLE: ASSIGNMENT2.R
+================================================================================
+
+# 1. Load your dataset
+data <- mtcars
+target_variable <- data$mpg
+
+# 2. Define your Null Hypothesis (H0) value and Alpha
+null_mean <- 20              # Null hypothesis - mean value of of mpg is 20
+alpha <- 0.05                # Significance level (95% confidence)
+
+# 3. Perform the T-Test
+test_result <- t.test(target_variable, mu = null_mean)
+
+# 4. Extract the p-value
+p_value <- test_result$p.value
+
+# 5. Prediction Logic
+cat("--- Statistical Hypothesis Test --- \n")
+cat("P-value calculated:", round(p_value, 4), "\n")
+cat("Significance Level (Alpha):", alpha, "\n\n")
+
+if (p_value < alpha) {
+  cat("PREDICTION: REJECT the Null Hypothesis.\n")
+  cat("Reason: The p-value is less than alpha, suggesting significant evidence.")
+} else {
+  cat("PREDICTION: FAIL TO REJECT (Accept) the Null Hypothesis.\n")
+  cat("Reason: The p-value is greater than alpha, suggesting no significant difference.")
+}
+
+
+================================================================================
+TITLE: ASSIGNMENT3.R
+================================================================================
+
+# Association rule - Apriori Algorithm
+
+library(arules)
+library(arulesViz)
+
+data("Groceries")
+
+rules <- apriori(Groceries, parameter = list(support = 0.01, confidence = 0.5))
+quality(rules) <- quality(rules)[, c("support", "confidence", "lift")]
+inspect(rules)
+
+metrics <- as.data.frame(quality(rules))
+metrics <- metrics[order(metrics$support), c("support", "confidence", "lift")]
+cols <- c("steelblue", "darkgreen", "firebrick")
+matplot(metrics, type = "l", lty = 1, lwd = 2, col = cols,
+  xlab = "Rule Index (sorted by support)", ylab = "Metric Value",
+  main = "Support, Confidence, Lift Trends"
+)
+legend("topleft", legend = colnames(metrics), col = cols, lty = 1, lwd = 2, bty = "n")
+
+plot(rules, method = "graph", engine = "interactive")
+
+
+
+================================================================================
+TITLE: ASSIGNMENT4.r
+================================================================================
+
+data(mtcars)
+
+str(mtcars)
+
+# Fit linear regression model
+lin_model <- lm(mpg ~ wt, data = mtcars)
+
+# View summary
+summary(lin_model)
+
+mtcars$predicted <- predict(lin_model)
+
+head(mtcars[, c("wt", "mpg", "predicted")])
+
+plot(mtcars$wt, mtcars$mpg,
+     xlab = "Weight (1000 lbs)",
+     ylab = "Miles Per Gallon",
+     main = "Linear Regression",
+     pch = 16)
+
+abline(lin_model, col = "blue", lwd = 2)
+
+# install.packages("ggplot2") # if needed
+library(ggplot2)
+
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point(color = "darkgreen") +
+  geom_smooth(method = "lm", se = TRUE, color = "blue") +
+     labs(title = "Linear Regression: MPG vs Weight",
+                x = "Weight (1000 lbs)",
+                y = "Miles Per Gallon")
+
+
+
+================================================================================
+TITLE: ASSIGNMENT5.r
+================================================================================
+
+# Load dataset
+data(airquality)
+
+# Keep needed columns and remove NA rows
+aq <- na.omit(airquality[, c("Ozone", "Temp")])
+
+# Create binary outcome: 1 = High Ozone, 0 = Low Ozone
+ozone_cutoff <- median(aq$Ozone)
+aq$HighOzone <- ifelse(aq$Ozone > ozone_cutoff, 1, 0)
+
+# Check structure
+str(aq)
+
+# Fit logistic regression model
+model <- glm(HighOzone ~ Temp,
+             data = aq,
+             family = binomial)
+
+summary(model)
+
+# Predicted probabilities
+aq$prob <- predict(model, type = "response")
+
+head(aq[, c("Temp", "Ozone", "HighOzone", "prob")])
+
+# Install if needed
+# install.packages("ggplot2")
+
+library(ggplot2)
+
+ggplot(aq, aes(x = Temp, y = HighOzone)) +
+  geom_point(position = position_jitter(height = 0.05),
+             alpha = 0.6) +
+  stat_smooth(method = "glm",
+              method.args = list(family = "binomial"),
+              se = FALSE,
+              color = "blue") +
+  labs(title = "Logistic Regression: Predicting High Ozone",
+       x = "Temperature",
+       y = "Probability of High Ozone")
+
+# Convert probabilities to predicted class
+aq$pred_class <- ifelse(aq$prob > 0.5, 1, 0)
+
+# Confusion matrix
+table(Predicted = aq$pred_class,
+      Actual = aq$HighOzone)
+
+exp(coef(model))
+
+
+
+================================================================================
+TITLE: ASSIGNMENT6.r
+================================================================================
+
+# Implementation of naive bayes classifier for titanic dataset
+library(e1071)
+
+data("Titanic")
+
+titanic_df <- as.data.frame(Titanic)
+titanic_df$Survived <- as.factor(titanic_df$Survived)
+
+model <- naiveBayes(Survived ~ ., data = titanic_df)
+predictions <- predict(model, titanic_df)
+
+confusion_matrix <- table(titanic_df$Survived, predictions)
+print(confusion_matrix)
+accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
+precision <- confusion_matrix[2, 2] / sum(confusion_matrix[2, ])
+recall <- confusion_matrix[2, 2] / sum(confusion_matrix[, 2])
+f1_score <- 2 * (precision * recall) / (precision + recall)
+print(paste("Accuracy:", round(accuracy, 4)))
+print(paste("Precision:", round(precision, 4)))
+print(paste("Recall:", round(recall, 4)))
+print(paste("F1 Score:", round(f1_score, 4)))
+
+
+================================================================================
+TITLE: ASSIGNMENT7.1.r
+================================================================================
+
+# Decision tree 
+# Load necessary libraries
+library(rpart)
+library(rpart.plot)
+library(ggplot2)
+
+# Load the dataset
+data(airquality)
+airquality_data <- na.omit(airquality)
+airquality_data$HighOzone <- as.factor(ifelse(airquality_data$Ozone > median(airquality_data$Ozone), "High", "Low"))
+
+# Decision Tree
+dt_model <- rpart(HighOzone ~ Solar.R + Wind + Temp + Month + Day, data = airquality_data, method = "class")
+print(dt_model)
+
+# Plot the decision tree
+rpart.plot(dt_model)
+
+pred <- predict(dt_model, airquality_data, type = "class")
+conf_matrix <- table(airquality_data$HighOzone, pred)
+print(conf_matrix)
+
+
+
+================================================================================
+TITLE: ASSIGNMENT7.2.r
+================================================================================
+
+# K-means
+
+# Load necessary libraries
+library(ggplot2)
+library(cluster)
+
+# Load the dataset
+data(mtcars)
+mtcars$am <- as.factor(mtcars$am)
+
+# Elbow method to find the optimal k
+set.seed(123)
+wcss <- vector()
+for (k in 1:10) {
+  kmeans_temp <- kmeans(mtcars[, -c(9)], centers = k, nstart = 25)
+  wcss[k] <- kmeans_temp$tot.withinss
+}
+
+elbow_data <- data.frame(k = 1:10, WCSS = wcss)
+ggplot(elbow_data, aes(x = k, y = WCSS)) +
+  geom_line() +
+  geom_point(size = 3) +
+  labs(title = "Elbow Method for Optimal k", x = "Number of Clusters (k)", y = "Within-Cluster Sum of Squares") +
+  theme_minimal() +
+  scale_x_continuous(breaks = 1:10)
+
+# K-means clustering with optimal k (determined from elbow plot)
+optimal_k <- 2
+set.seed(123)
+kmeans_model <- kmeans(mtcars[, -c(9)], centers = optimal_k, nstart = 25)
+print(kmeans_model)
+
+# PCA for visualization
+pca <- prcomp(mtcars[, -c(9)], scale. = TRUE)
+pca_data <- data.frame(pca$x, am = mtcars$am)
+
+ggplot(pca_data, aes(PC1, PC2, color = am)) +
+  geom_point(size = 3) +
+  labs(title = "PCA of mtcars dataset", x = "Principal Component 1", y = "Principal Component 2") +
+  theme_minimal() +
+  scale_color_manual(values = c("red", "blue")) +
+  theme(legend.title = element_blank())
+
+
+================================================================================
+TITLE: ASSIGNMENT8.r
+================================================================================
+
+# Random Forest Classification and Regression
+
+# Load necessary library
+library(randomForest)
+
+# -------------------------------------------------
+# 1) Random Forest Classification using iris dataset
+# -------------------------------------------------
+
+data(iris)
+iris <- na.omit(iris)
+iris$Species <- as.factor(iris$Species)
+
+set.seed(123)
+train_indices_class <- sample(1:nrow(iris), size = 0.7 * nrow(iris))
+train_data_class <- iris[train_indices_class, ]
+test_data_class <- iris[-train_indices_class, ]
+
+rf_class_model <- randomForest(Species ~ ., data = train_data_class, ntree = 100, importance = TRUE)
+print(rf_class_model)
+
+class_predicted_values <- predict(rf_class_model, test_data_class)
+class_actual_values <- test_data_class$Species
+
+class_result_table <- data.frame(Actual = class_actual_values, Predicted = class_predicted_values)
+print(class_result_table)
+
+class_confusion_matrix <- table(Actual = class_actual_values, Predicted = class_predicted_values)
+print(class_confusion_matrix)
+
+plot(rf_class_model, main = "Classification: Random Forest Error Rate")
+varImpPlot(rf_class_model, main = "Classification: Variable Importance")
+
+# -------------------------------------------------
+# 2) Random Forest Regression using mtcars dataset
+# -------------------------------------------------
+
+data(mtcars)
+
+set.seed(123)
+train_indices_reg <- sample(1:nrow(mtcars), size = 0.7 * nrow(mtcars))
+train_data_reg <- mtcars[train_indices_reg, ]
+test_data_reg <- mtcars[-train_indices_reg, ]
+
+rf_reg_model <- randomForest(mpg ~ ., data = train_data_reg, ntree = 100, importance = TRUE)
+print(rf_reg_model)
+
+reg_predicted_values <- predict(rf_reg_model, test_data_reg)
+reg_actual_values <- test_data_reg$mpg
+
+reg_result_table <- data.frame(Actual = reg_actual_values, Predicted = reg_predicted_values)
+print(reg_result_table)
+
+plot(reg_actual_values, reg_predicted_values,
+	main = "Regression: Actual vs Predicted MPG",
+	xlab = "Actual MPG", ylab = "Predicted MPG",
+	col = "blue", pch = 16)
+abline(0, 1, col = "red", lwd = 2)
+
+varImpPlot(rf_reg_model, main = "Regression: Variable Importance")
+
+
+
